@@ -1,6 +1,10 @@
-// …Some others imports before
-const withSass = require("@zeit/next-sass");
+// this is a custom file, you probably don't need to worry about it
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+// …Some others imports before
+const withSass = require('@zeit/next-sass')
+
+// this lets us use elastic with next.js
 const nextConfig = {
   webpack(config, { isServer }) {
     // Allows to prevent crashes on server with EUi
@@ -8,35 +12,35 @@ const nextConfig = {
       config.externals = config.externals.map((fn) => {
         return (context, request, callback) => {
           if (
-            request.indexOf("@elastic/eui") > -1 ||
-            request.indexOf("react-ace") > -1
+            request.indexOf('@elastic/eui') > -1 ||
+            request.indexOf('react-ace') > -1
           ) {
-            return callback();
+            return callback()
           }
 
-          return fn(context, request, callback);
-        };
-      });
+          return fn(context, request, callback)
+        }
+      })
 
       // Mock react-ace server-side
       config.module.rules.push({
         test: /react-ace/,
-        use: "null-loader",
-      });
+        use: 'null-loader',
+      })
 
       // Mock HTMLElement and window server-side
       let definePluginId = config.plugins.findIndex(
-        (p) => p.constructor.name === "DefinePlugin"
-      );
+        (p) => p.constructor.name === 'DefinePlugin'
+      )
       config.plugins[definePluginId].definitions = {
         ...config.plugins[definePluginId].definitions,
         HTMLElement: function () {},
         window: function () {},
-      };
+      }
     }
 
-    return config;
+    return config
   },
-};
+}
 
-module.exports = withSass(nextConfig);
+module.exports = withSass(nextConfig)
